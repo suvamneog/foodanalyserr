@@ -12,7 +12,7 @@ import History from "./pages/history"
 import  Text from "./pages/Text"
 import BarcodeScanner from "./pages/barcodeScanner"
 import FoodScanner from "./pages/FoodImageRecognition"
-import Navbar from "./pages/navbar" 
+import Navbar from "./pages/Navbar" 
 
 
 function App() {
