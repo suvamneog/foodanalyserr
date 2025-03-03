@@ -71,7 +71,7 @@ const Navbar = () => {
               to="/image"
               className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors"
             >
-             image
+             Image
             </Link>
             {isAuthenticated && <AuthenticatedLinks />}
             <div className="flex items-center space-x-4">
@@ -133,7 +133,7 @@ const Navbar = () => {
               to="/image"
               className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors"
             >
-             image
+             Image
             </Link>
             {isAuthenticated && (
               <>
