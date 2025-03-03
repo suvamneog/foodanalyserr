@@ -12,7 +12,7 @@ import History from "./pages/history"
 import  Text from "./pages/Text"
 import BarcodeScanner from "./pages/barcodeScanner"
 import FoodScanner from "./pages/FoodImageRecognition"
-import NavBar from "./pages/navbar"
+import NavBar from "./pages/navBar"
 
 function App() {
   const [foodName, setFoodName] = useState("")
