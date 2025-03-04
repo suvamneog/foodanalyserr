@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import axios from 'axios';
 import { AlertCircle, Check, AlertTriangle } from 'lucide-react';
@@ -15,12 +15,10 @@ const BarcodeScanner = () => {
   const [error, setError] = useState(null);
   const [healthyAlternative, setHealthyAlternative] = useState(null);
 
-  useEffect(() => {
+  // Move scanner initialization into a function
+  const initializeScanner = useCallback(() => {
     const scanner = new Html5QrcodeScanner('reader', {
-      qrbox: {
-        width: 250,
-        height: 250,
-      },
+      qrbox: { width: 250, height: 250 },
       fps: 5,
       cameraIdOrConfig: { facingMode: "environment" }
     });
@@ -31,12 +29,29 @@ const BarcodeScanner = () => {
       fetchProductInfo(result);
     }
 
-    scanner.render(success, error);
+    scanner.render(success);
 
+    return scanner;
+  }, []);
+
+  // Reset scanner and state
+  const resetScanner = useCallback(() => {
+    setScanResult(null);
+    setProduct(null);
+    setError(null);
+    setHealthyAlternative(null);
+    setLoading(false);
+    initializeScanner(); // Restart scanner
+  }, [initializeScanner]);
+
+  useEffect(() => {
+    const scanner = initializeScanner();
     return () => {
       scanner.clear();
     };
-  }, []);
+  }, [initializeScanner]);
+
+  
 
   const fetchProductInfo = async (barcode) => {
     setLoading(true);
@@ -564,7 +579,7 @@ const BarcodeScanner = () => {
       {scanResult && (
         <div className="mt-6 text-center">
           <button 
-            onClick={() => window.location.reload()} 
+           onClick={resetScanner}
             className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg transition duration-200"
             >
             Scan Another Product
