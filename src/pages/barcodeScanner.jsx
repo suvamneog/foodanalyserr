@@ -22,6 +22,7 @@ const BarcodeScanner = () => {
         height: 250,
       },
       fps: 5,
+      cameraIdOrConfig: { facingMode: "environment" }
     });
 
     function success(result) {
