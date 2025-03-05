@@ -30,9 +30,25 @@ function analyzeFood(food) {
   return { pros, cons }
 }
 
-function FoodAnalyzer({ output, loading = false }) {
+function FoodAnalyzer({ output, loading }) {
   const { isAuthenticated } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
+
+  useEffect(() => {
+    let loadingTimer;
+
+    if (loading) {
+      // Set a delay before showing the loading animation
+      loadingTimer = setTimeout(() => {
+        setShowLoading(true);
+      },1400); // Adjust the delay as needed
+    } else {
+      setShowLoading(false);
+    }
+
+    return () => clearTimeout(loadingTimer);
+  }, [loading]);
 
   useEffect(() => {
     if (!loading && output?.length > 0) {
@@ -45,16 +61,19 @@ function FoodAnalyzer({ output, loading = false }) {
     }
   }, [loading, output]);
 
-  if (loading) {
+  // Show loading state if loading is true and showLoading is true
+  if (loading && showLoading) {
     return (
-      <div className="flex flex-col justify-center items-center w-full gap-4">
-        <LoadingCard />
+      <div className="w-full max-w-xs mx-auto">
         <LoadingCard />
       </div>
     );
   }
 
-  if (!output || output.length === 0) return null;
+  // Show nothing if output is not available
+  if (!output || output.length === 0) {
+    return null;
+  }
 
   return (
     <div className={`flex flex-col justify-center items-center w-full gap-4 transition-opacity duration-500 ease-in-out ${
