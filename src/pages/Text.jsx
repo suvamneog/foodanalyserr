@@ -1,11 +1,13 @@
 /* eslint-disable react/prop-types */
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Sparkles, Info, LogIn } from "lucide-react"
-import { CardBody, CardContainer, CardItem } from "../components/ui/3D-card"
-import { useAuth } from "../utils/AuthContext"
-import { Link } from "react-router-dom"
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
+import { Sparkles, Info, LogIn } from "lucide-react";
+import { CardBody, CardContainer, CardItem } from "../components/ui/3D-card";
+import { useAuth } from "../utils/AuthContext";
+import { Link } from "react-router-dom";
+import LoadingCard from '../components/ui/loadingCard';
 
 function analyzeFood(food) {
   const pros = []
@@ -28,13 +30,36 @@ function analyzeFood(food) {
   return { pros, cons }
 }
 
-function FoodAnalyzer({ output }) {
-  const { isAuthenticated } = useAuth()
+function FoodAnalyzer({ output, loading = false }) {
+  const { isAuthenticated } = useAuth();
+  const [isVisible, setIsVisible] = useState(false);
 
-  if (!output || output.length === 0) return null
+  useEffect(() => {
+    if (!loading && output?.length > 0) {
+      const timer = setTimeout(() => {
+        setIsVisible(true);
+      }, 300);
+      return () => clearTimeout(timer);
+    } else {
+      setIsVisible(false);
+    }
+  }, [loading, output]);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col justify-center items-center w-full gap-4">
+        <LoadingCard />
+        <LoadingCard />
+      </div>
+    );
+  }
+
+  if (!output || output.length === 0) return null;
 
   return (
-    <div className="flex flex-col justify-center items-center w-full">
+    <div className={`flex flex-col justify-center items-center w-full gap-4 transition-opacity duration-500 ease-in-out ${
+      isVisible ? 'opacity-100' : 'opacity-0'
+    }`}>
       {output.map((food, index) => {
         const { pros, cons } = analyzeFood(food)
         return (
@@ -132,4 +157,4 @@ function FoodAnalyzer({ output }) {
   )
 }
 
-export default FoodAnalyzer
+export default FoodAnalyzer;
